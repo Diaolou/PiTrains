@@ -10,10 +10,11 @@ AvailableLEDCount = 8 # Total number of LEDs available; this should be 8 if you'
 from nredarwin.webservice import DarwinLdbSession
 from blinkt import set_all, set_pixel, set_clear_on_exit, show
 from datetime import datetime, timedelta
+import os
 import syslog
 
 DarwinSession = DarwinLdbSession(wsdl='https://lite.realtime.nationalrail.co.uk/OpenLDBWS/wsdl.aspx')
-DepartureBoard = DarwinSession.get_station_board(DEPARTURE_CRS_CODE,destination_crs=DESTINATION_CRS_CODE)
+DepartureBoard = DarwinSession.get_station_board(os.environ["DEPARTURE_CRS_CODE"],destination_crs=os.environ["DESTINATION_CRS_CODE"])
 
 # Initialise lists
 ServiceStatus = []
