@@ -1,5 +1,9 @@
 # PiTrains
 Live train notification tool for Raspberry Pi and Blinkt!
+A live UK train departure board to check before you walk out the door.
+Uses the OpenLDBWS service to show the live running status of direct trains between your specified stations.
+## EXAMPLE
+![PiTrainsImprovedMode in action...](PiTrainsExample.jpg)
 ## ABOUT
 There are two different versions available at present.
 ### PiTrainsImprovedMode.py
