@@ -1,0 +1,51 @@
+---
+- name: Install Python blinkt package
+  become: true
+  pip:
+    name: blinkt
+    state: latest
+- name: Install Python nre-darwin-py package
+  become: true
+  pip:
+    name: nre-darwin-py
+    state: latest
+- name: Put DARWIN_WEBSERVICE_API_KEY in /etc/environment
+  become: true
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    line: 'DARWIN_WEBSERVICE_API_KEY={{darwinKey}}'
+- name: Put DEPARTURE_CRS_CODE in /etc/environment
+  become: true
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    line: 'DEPARTURE_CRS_CODE={{departureCRSCode}}'
+- name: Put DESTINATION_CRS_CODE in /etc/environment
+  become: true
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    line: 'DESTINATION_CRS_CODE={{destinationCRSCode}}'
+- name: Put legacy mode train notifier in /root
+  become: true
+  copy:
+    src: ~/PiTrains/PiTrainsLegacyMode.py
+    dest: /root/PiTrainsLegacyMode.py
+    owner: root
+    group: root
+    mode: 0700
+- name: Put improved mode train notifier in /root
+  become: true
+  copy:
+    src: ~/PiTrains/PiTrainsImprovedMode.py
+    dest: /root/PiTrainsImprovedMode.py
+    owner: root
+    group: root
+    mode: 0700
+- name: Add improved mode train notifier to root's crontab
+  become: true
+  cron:
+    user: root
+    name: "PiTrains"
+    job: "/root/PiTrainsImprovedMode.py"
