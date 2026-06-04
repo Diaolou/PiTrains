@@ -15,7 +15,7 @@ try:
 except (ImportError, RuntimeError):
     GOT_BLINKT=False
 
-# Hangle args
+# Handle args
 parser = argparse.ArgumentParser(description="Live train notification tool for Raspberry Pi and Blinkt!")
 parser.add_argument("--chatty", action="store_true", help="enable CLI output even if a Blinkt! is detected")
 args = parser.parse_args()
