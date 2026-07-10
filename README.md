@@ -28,7 +28,7 @@ If there are multiple trains in the time window, the "best" LED state is set - W
 PiTrains can expose an HTTP endpoint for Home Assistant to poll:
 
 ```bash
-python /home/runner/work/PiTrains/PiTrains/PiTrains.py --serve-home-assistant --host 0.0.0.0 --port 8765 --path /status
+python PiTrains.py --serve-home-assistant --host 0.0.0.0 --port 8765 --path /status
 ```
 
 Then configure a Home Assistant REST sensor to poll `http://<your-pi-ip>:8765/status`.

@@ -112,7 +112,7 @@ def set_blinkt_leds(leds):
         elif led_to_set == 3:
             set_pixel(AVAILABLELEDCOUNT - 1 - idx, 1, 1, 0)
         elif led_to_set == 2:
-            set_pixel(AVAILABLELEDCOUNT - 1 - idx, 0, 1, 0)
+            set_pixel(AVAILABLELEDCOUNT - 1 - idx, 0, 0, 1)
         elif led_to_set == 1:
             set_pixel(AVAILABLELEDCOUNT - 1 - idx, 1, 0, 0)
     set_clear_on_exit(False)
