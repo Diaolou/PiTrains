@@ -35,12 +35,16 @@ def collect_train_data():
     departure_board = darwin_session.get_station_board(
         os.environ["DEPARTURE_CRS_CODE"], destination_crs=os.environ["DESTINATION_CRS_CODE"]
     )
+    if departure_board is None:
+        raise ConnectionError("No response from train API")
 
     human_readable_services = []
     parsed_services = []
     leds = [0] * AVAILABLELEDCOUNT
 
-    train_services = departure_board.train_services or []
+    train_services = departure_board.train_services
+    if train_services is None:
+        train_services = []
 
     # Populate human_readable_services and parsed_services.
     # We also check and deal with trains that wrap over midnight
@@ -140,15 +144,18 @@ def run_polling_server(host, port, path):
                 self.end_headers()
                 self.wfile.write(payload)
             except (KeyError, ValueError, TimeoutError, ConnectionError, OSError) as ex:
-                payload = json.dumps({"error": str(ex)}).encode("utf-8")
+                if isinstance(ex, KeyError):
+                    error_message = f"Missing environment variable: {ex.args[0]}"
+                elif isinstance(ex, (TimeoutError, ConnectionError, OSError)):
+                    error_message = "Failed to connect to train API"
+                else:
+                    error_message = str(ex)
+                payload = json.dumps({"error": error_message}).encode("utf-8")
                 self.send_response(500)
                 self.send_header("Content-Type", "application/json")
                 self.send_header("Content-Length", str(len(payload)))
                 self.end_headers()
                 self.wfile.write(payload)
-
-        def log_message(self, fmt, *args):
-            return
 
     server = HTTPServer((host, port), HomeAssistantPollingHandler)
     print(f"Home Assistant polling endpoint listening on http://{host}:{port}{path}")
