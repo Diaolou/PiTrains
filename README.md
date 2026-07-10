@@ -22,3 +22,20 @@ If there are multiple trains in the time window, the "best" LED state is set - W
 6. Create a DEPARTURE_CRS_CODE environment variable (see [this list](http://www.railwaycodes.org.uk/crs/CRS0.shtm)).
 7. Create DESTINATION_CRS_CODE environment variable (see [this list](http://www.railwaycodes.org.uk/crs/CRS0.shtm)).
 8. Run on cron.
+
+## HOME ASSISTANT POLLING
+
+PiTrains can expose an HTTP endpoint for Home Assistant to poll:
+
+```bash
+python PiTrains.py --serve-home-assistant --host 0.0.0.0 --port 8765 --path /status
+```
+
+Then configure a Home Assistant REST sensor to poll `http://<your-pi-ip>:8765/status`.
+The response is JSON and includes:
+- `DEPARTURE_CRS_CODE`
+- `DESTINATION_CRS_CODE`
+- `HumanReadableServices`
+- `ParsedServices`
+- `LEDs`
+- `RetrievedAt`
