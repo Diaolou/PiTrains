@@ -7,6 +7,7 @@
 import argparse
 import json
 import os
+import signal
 from datetime import datetime, timedelta
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pprint import pprint
@@ -138,7 +139,7 @@ def run_polling_server(host, port, path):
                 self.send_header("Content-Length", str(len(payload)))
                 self.end_headers()
                 self.wfile.write(payload)
-            except Exception as ex:
+            except (KeyError, ValueError, TimeoutError, ConnectionError, OSError) as ex:
                 payload = json.dumps({"error": str(ex)}).encode("utf-8")
                 self.send_response(500)
                 self.send_header("Content-Type", "application/json")
@@ -151,7 +152,18 @@ def run_polling_server(host, port, path):
 
     server = HTTPServer((host, port), HomeAssistantPollingHandler)
     print(f"Home Assistant polling endpoint listening on http://{host}:{port}{path}")
-    server.serve_forever()
+
+    def shutdown_server(*_):
+        server.shutdown()
+
+    signal.signal(signal.SIGINT, shutdown_server)
+    if hasattr(signal, "SIGTERM"):
+        signal.signal(signal.SIGTERM, shutdown_server)
+
+    try:
+        server.serve_forever()
+    finally:
+        server.server_close()
 
 
 def main():
